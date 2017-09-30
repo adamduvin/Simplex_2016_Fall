@@ -14,7 +14,11 @@ Date: 2017/05
 
 class Application
 {
-	MyMesh* m_pMesh = nullptr;
+	//MyMesh* m_pMesh = nullptr;
+	// Used to set indices for meshMatrix
+	int positions[8][11] = { { 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 }, { 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0 }, { 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0 }, { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1 }, { 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1 }, { 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0 } };
+	// Holds mesh objects
+	MyMesh* meshMatrix[8][11];
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
 
 private:
@@ -117,6 +121,8 @@ private:
 	*/
 	void Release(void);
 #pragma endregion
+
+	void FormShape();
 
 #pragma region Main Loop
 	/*

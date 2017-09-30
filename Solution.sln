@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicX", "BasicX\BasicX.vcxproj", "{E745E25C-0143-42AC-A486-1395A4C972AE}"
 EndProject
@@ -52,7 +52,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_Minimal", "11_Minimal\11
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignments", "Assignments", "{5D1FB011-A2D8-4107-890B-BF1ACD0C0994}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13_Translation and Scale", "13_Translation and Scale\13_Translation and Scale.vcxproj", "{F8D2226D-0FEB-4B92-9F76-59DBB6936F5C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DuvinAdam_E04", "13_Translation and Scale\13_Translation and Scale.vcxproj", "{F8D2226D-0FEB-4B92-9F76-59DBB6936F5C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E745E25C-0143-42AC-A486-1395A4C972AE} = {E745E25C-0143-42AC-A486-1395A4C972AE}
 	EndProjectSection
