@@ -275,9 +275,23 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> points;
+	vector3 baseCenter(0.0f, -(a_fHeight/2), 0.0f);
+	vector3 heightPoint(0.0f, a_fHeight/2, 0.0f);
+
+	float angle = 360.0f / (float)a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(baseCenter.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), baseCenter.y, baseCenter.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
+		points.push_back(point);
+		if (i != 0) {
+			AddTri(point, points[i - 1], baseCenter);
+			AddTri(points[i - 1], point, heightPoint);
+		}
+	}
+
+	AddTri(points[0], points[points.size() - 1], baseCenter);
+	AddTri(points[points.size() - 1], points[0], heightPoint);
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -299,9 +313,35 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> bottomPoints;
+	vector3 bottomCenter(0.0f, -(a_fHeight/2), 0.0f);
+	vector3 topCenter(0.0f, a_fHeight/2, 0.0f);
+
+	float angle = 360.0f / (float)a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(bottomCenter.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), bottomCenter.y, bottomCenter.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
+		bottomPoints.push_back(point);
+		if (i != 0) {
+			AddTri(point, bottomPoints[i - 1], bottomCenter);
+		}
+	}
+
+	AddTri(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], bottomCenter);
+
+	std::vector<vector3> topPoints;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(topCenter.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), topCenter.y, topCenter.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
+		topPoints.push_back(point);
+		if (i != 0) {
+			AddTri(topPoints[i - 1], point, topCenter);
+			AddQuad(bottomPoints[i - 1], bottomPoints[i], topPoints[i-1], point);
+		}
+	}
+
+	AddTri(topPoints[topPoints.size() - 1], topPoints[0], topCenter);
+	AddQuad(bottomPoints[bottomPoints.size() - 1], bottomPoints[0], topPoints[topPoints.size() - 1], topPoints[0]);
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
@@ -329,9 +369,59 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
-	// Replace this with your code
-	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
-	// -------------------------------
+	std::vector<vector3> bottomPoints;
+	vector3 bottomCenter(0.0f, -(a_fHeight / 2), 0.0f);
+	vector3 topCenter(0.0f, a_fHeight / 2, 0.0f);
+
+	float angle = 360.0f / (float)a_nSubdivisions;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(bottomCenter.x + (a_fOuterRadius * cos((angle * i) * (PI / 180.0))), bottomCenter.y, bottomCenter.z + (a_fOuterRadius * sin((angle * i) * (PI / 180.0))));
+		bottomPoints.push_back(point);
+		if (i != 0) {
+			//AddTri(point, bottomPoints[i - 1], bottomCenter);
+		}
+	}
+
+	//AddTri(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], bottomCenter);
+
+	std::vector<vector3> topPoints;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(topCenter.x + (a_fOuterRadius * cos((angle * i) * (PI / 180.0))), topCenter.y, topCenter.z + (a_fOuterRadius * sin((angle * i) * (PI / 180.0))));
+		topPoints.push_back(point);
+		if (i != 0) {
+			AddQuad(bottomPoints[i], bottomPoints[i - 1], point, topPoints[i - 1]);
+		}
+	}
+
+	AddQuad(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], topPoints[0], topPoints[bottomPoints.size() - 1]);
+
+	std::vector<vector3> bottomInnerPoints;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(bottomCenter.x + (a_fInnerRadius * cos((angle * i) * (PI / 180.0))), bottomCenter.y, bottomCenter.z + (a_fInnerRadius * sin((angle * i) * (PI / 180.0))));
+		bottomInnerPoints.push_back(point);
+		if (i != 0) {
+			AddQuad(point, bottomInnerPoints[i - 1], bottomPoints[i], bottomPoints[i - 1]);
+		}
+	}
+
+	AddQuad(bottomInnerPoints[0], bottomInnerPoints[bottomInnerPoints.size() - 1], bottomPoints[0], bottomPoints[bottomPoints.size() - 1]);
+
+	std::vector<vector3> topInnerPoints;
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		vector3 point(topCenter.x + (a_fInnerRadius * cos((angle * i) * (PI / 180.0))), topCenter.y, topCenter.z + (a_fInnerRadius * sin((angle * i) * (PI / 180.0))));
+		topInnerPoints.push_back(point);
+		if (i != 0) {
+			AddQuad(topPoints[i], topPoints[i - 1], point, topInnerPoints[i - 1]);
+			AddQuad(bottomInnerPoints[i - 1], bottomInnerPoints[i], topInnerPoints[i - 1], point);
+		}
+	}
+
+	AddQuad(topPoints[0], topPoints[topPoints.size() - 1], topInnerPoints[0], topInnerPoints[topInnerPoints.size() - 1]);
+	AddQuad(bottomInnerPoints[bottomInnerPoints.size() - 1], bottomInnerPoints[0], topInnerPoints[topInnerPoints.size() - 1], topInnerPoints[0]);
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
