@@ -60,10 +60,70 @@ void Application::Display(void)
 
 
 
+	
+	// Sets the model's path
+	vector3 thisPoint;
+	vector3 nextPoint;
+	static int path = 0;
+	switch (path) {
+	case 0:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 1:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 2:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 3:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 4:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 5:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 6:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 7:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 8:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 9:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[path + 1];
+		break;
+	case 10:
+		thisPoint = m_stopsList[path];
+		nextPoint = m_stopsList[0];
+		break;
+	}
 
-	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
-	//-------------------
+	// Percentage of time
+	float percent = MapValue(fTimer, 0.0f, 5.0f, 0.0f, 1.0f);
+
+	// Lerp distance between the two points on the path
+	v3CurrentPos = glm::lerp(thisPoint, nextPoint, percent);
+
+	// Reset timer if model reached its target
+	if (percent >= 1.0f) {
+		fTimer = m_pSystem->GetDeltaTime(uClock);
+		path++;
+		path %= m_stopsList.size();
+	}
 	
 
 
