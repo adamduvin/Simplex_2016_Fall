@@ -275,12 +275,14 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	Release();
 	Init();
 
+	// Makes a center point for the base and the "point" of the cone
 	std::vector<vector3> points;
 	vector3 baseCenter(0.0f, -(a_fHeight/2), 0.0f);
 	vector3 heightPoint(0.0f, a_fHeight/2, 0.0f);
 
 	float angle = 360.0f / (float)a_nSubdivisions;
 
+	// Creates points and makes triangles between themselves and the point at the top
 	for (int i = 0; i < a_nSubdivisions; i++) {
 		vector3 point(baseCenter.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), baseCenter.y, baseCenter.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
 		points.push_back(point);
@@ -313,6 +315,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 	Release();
 	Init();
 
+	// Creates set of points for the bottom base
 	std::vector<vector3> bottomPoints;
 	vector3 bottomCenter(0.0f, -(a_fHeight/2), 0.0f);
 	vector3 topCenter(0.0f, a_fHeight/2, 0.0f);
@@ -329,6 +332,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	AddTri(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], bottomCenter);
 
+	// Creates set of points for the top base
 	std::vector<vector3> topPoints;
 
 	for (int i = 0; i < a_nSubdivisions; i++) {
@@ -369,6 +373,7 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	Release();
 	Init();
 
+	// Creates set of points for the bottom outside base
 	std::vector<vector3> bottomPoints;
 	vector3 bottomCenter(0.0f, -(a_fHeight / 2), 0.0f);
 	vector3 topCenter(0.0f, a_fHeight / 2, 0.0f);
@@ -378,13 +383,9 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	for (int i = 0; i < a_nSubdivisions; i++) {
 		vector3 point(bottomCenter.x + (a_fOuterRadius * cos((angle * i) * (PI / 180.0))), bottomCenter.y, bottomCenter.z + (a_fOuterRadius * sin((angle * i) * (PI / 180.0))));
 		bottomPoints.push_back(point);
-		if (i != 0) {
-			//AddTri(point, bottomPoints[i - 1], bottomCenter);
-		}
 	}
 
-	//AddTri(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], bottomCenter);
-
+	// Creates set of points for the top outside base
 	std::vector<vector3> topPoints;
 
 	for (int i = 0; i < a_nSubdivisions; i++) {
@@ -397,6 +398,7 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 
 	AddQuad(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], topPoints[0], topPoints[bottomPoints.size() - 1]);
 
+	// Creates set of points for the bottom inside base
 	std::vector<vector3> bottomInnerPoints;
 
 	for (int i = 0; i < a_nSubdivisions; i++) {
@@ -409,6 +411,7 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 
 	AddQuad(bottomInnerPoints[0], bottomInnerPoints[bottomInnerPoints.size() - 1], bottomPoints[0], bottomPoints[bottomPoints.size() - 1]);
 
+	// Creates set of points for the top inside base
 	std::vector<vector3> topInnerPoints;
 
 	for (int i = 0; i < a_nSubdivisions; i++) {
@@ -478,29 +481,34 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	std::vector<vector3> bottomPoints;
 	std::vector<vector3> topPoints;
-	//std::vector<vector3> middlePoints;
 	vector3 bottomCenter(0.0f, -(a_fRadius), 0.0f);
 	vector3 topCenter(0.0f, a_fRadius, 0.0f);
 	vector3 midpoint(0.0f, 0.0f, 0.0f);
 
 	float angle = 360.0f / (float)a_nSubdivisions;
 
-	//for (int i = 0; i < a_nSubdivisions; i++) {
-	//	vector3 point(midpoint.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), midpoint.y, midpoint.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
-	//	middlePoints.push_back(point);
-	//	//if (i != 0) {
-	//	//	AddTri(point, bottomPoints[i - 1], bottomCenter);
-	//	//}
-	//}
-
 	float dist = a_fRadius / (float)a_nSubdivisions;
 
 	std::vector<vector3> previousLineTop;
 	std::vector<vector3> previousLineBottom;
 
+	// Creates points on the sphere from the middle to the poles
 	for (int i = 0; i < a_nSubdivisions; i++) {
 		for (int j = 0; j < a_nSubdivisions; j++) {
 			vector3 pointBottom(midpoint.x + ((a_fRadius - (dist * (i))) * cos((angle * j) * (PI / 180.0))), midpoint.y - (dist * i), midpoint.z + ((a_fRadius - (dist * (i))) * sin((angle * j) * (PI / 180.0))));
+			
+			float x = pointBottom.x - midpoint.x;
+			float y = pointBottom.y - midpoint.y;
+			float z = pointBottom.z - midpoint.z;
+
+			float midToPoint = sqrt(pow(x,2) + pow(y,2) + pow(z,2));
+
+			x = (x * a_fRadius) / midToPoint;
+			y = (y * a_fRadius) / midToPoint;
+			z = (z * a_fRadius) / midToPoint;
+
+			pointBottom = vector3(x, y, z);
+
 			bottomPoints.push_back(pointBottom);
 			if (i != 0) {
 				if (j != 0) {
@@ -509,6 +517,19 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 			}
 
 			vector3 pointTop(midpoint.x + ((a_fRadius - (dist * (i))) * cos((angle * j) * (PI / 180.0))), midpoint.y + (dist * i), midpoint.z + ((a_fRadius - (dist * (i))) * sin((angle * j) * (PI / 180.0))));
+			
+			x = pointTop.x - midpoint.x;
+			y = pointTop.y - midpoint.y;
+			z = pointTop.z - midpoint.z;
+
+			midToPoint = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+
+			x = (x * a_fRadius) / midToPoint;
+			y = (y * a_fRadius) / midToPoint;
+			z = (z * a_fRadius) / midToPoint;
+
+			pointTop = vector3(x, y, z);
+			
 			topPoints.push_back(pointTop);
 			if (i != 0) {
 				if (j != 0) {
@@ -545,27 +566,6 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	AddTri(previousLineBottom[previousLineBottom.size() - 1], previousLineBottom[0], bottomCenter);
 	AddTri(previousLineTop[0], previousLineTop[previousLineTop.size() - 1], topCenter);
-
-
-
-
-
-
-	//AddTri(bottomPoints[0], bottomPoints[bottomPoints.size() - 1], bottomCenter);
-	//
-	//std::vector<vector3> topPoints;
-	//
-	//for (int i = 0; i < a_nSubdivisions; i++) {
-	//	vector3 point(topCenter.x + (a_fRadius * cos((angle * i) * (PI / 180.0))), topCenter.y, topCenter.z + (a_fRadius * sin((angle * i) * (PI / 180.0))));
-	//	topPoints.push_back(point);
-	//	if (i != 0) {
-	//		AddTri(topPoints[i - 1], point, topCenter);
-	//		AddQuad(bottomPoints[i - 1], bottomPoints[i], topPoints[i - 1], point);
-	//	}
-	//}
-	//
-	//AddTri(topPoints[topPoints.size() - 1], topPoints[0], topCenter);
-	//AddQuad(bottomPoints[bottomPoints.size() - 1], bottomPoints[0], topPoints[topPoints.size() - 1], topPoints[0]);
 
 	// Adding information about color
 	CompleteMesh(a_v3Color);
