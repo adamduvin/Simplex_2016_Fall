@@ -1,0 +1,15 @@
+﻿  MyMesh.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  Main.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  ControllerConfiguration.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\controllerconfiguration.h(8): fatal error C1083: Cannot open include file: 'SFML\Window.hpp': No such file or directory
+  AppClassMain.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  AppClassGUI.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  AppClassControls.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  AppClass.cpp
+z:\igmprofile\documents\github\simplex_2016_fall\fixgimballock\definitions.h(15): fatal error C1083: Cannot open include file: 'Simplex\Simplex.h': No such file or directory
+  Generating Code...

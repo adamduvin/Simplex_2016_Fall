@@ -39,6 +39,22 @@ void Application::InitVariables(void)
 	{
 		vector3 v3Color = WaveLengthToRGB(uColor); //calculate color based on wavelength
 		m_shapeList.push_back(m_pMeshMngr->GenerateTorus(fSize, fSize - 0.1f, 3, i, v3Color)); //generate a custom torus and add it to the meshmanager
+
+		// finds points in each orbit and adds it to the routes vector
+		float angle = 360.0f / i;
+		std::vector<vector3> points;
+		for (int j = 0; j < i; j++) {
+			vector3 point((fSize * cos((angle * j) * (PI / 180.0))), (fSize * sin((angle * j) * (PI / 180.0))), 0.0f);
+			points.push_back(point);
+
+			uint start = 0;
+			prevPoint.push_back(start);
+
+			//float percent = 0.0f;
+			//percents.push_back(percent);
+		}
+		routes.push_back(points);
+
 		fSize += 0.5f; //increment the size for the next orbit
 		uColor -= static_cast<uint>(decrements); //decrease the wavelength
 	}
@@ -67,6 +83,11 @@ void Application::Display(void)
 	*/
 	//m4Offset = glm::rotate(IDENTITY_M4, 90.0f, AXIS_Z);
 
+	// makes a timer
+	static float timer = 0.0f;
+	static uint clock = m_pSystem->GenClock();
+	timer += m_pSystem->GetDeltaTime(clock);
+
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
@@ -74,6 +95,32 @@ void Application::Display(void)
 
 		//calculate the current position
 		vector3 v3CurrentPos = ZERO_V3;
+
+		// sets two points that are being lerped
+		vector3 previous = routes[i][prevPoint[i]];
+		vector3 next;
+
+		if (prevPoint[i] == routes[i].size() - 1) {
+			next = routes[i][0];
+		}
+
+		else {
+			next = routes[i][prevPoint[i] + 1];
+		}
+
+		float percent = MapValue(timer, 0.0f, 2.0f, 0.0f, 1.0f);
+
+		// lerps between two points
+		v3CurrentPos = glm::lerp(previous, next, percent);
+
+		if (percent >= 1.0f) {
+			timer = m_pSystem->GetDeltaTime(clock);
+			for (int j = 0; j < routes.size(); j++) {
+				prevPoint[j]++;
+				prevPoint[j] %= routes[j].size();
+			}
+		}
+
 		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
 		//draw spheres
