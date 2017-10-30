@@ -81,6 +81,7 @@ void Application::Display(void)
 		m_pCamera->SetPositionTargetAndUp(vector3(0.0f, 0.0f, 10.0f), vector3(0.0f, 0.0f, 0.0f), vector3(0.0f, -1.0f, 0.0f));
 		break;
 	}
+	// I hate VS source control
 
 	m_pCamera->CalculateProjectionMatrix();
 	m_pCamera->CalculateViewMatrix();
