@@ -126,6 +126,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13_Translation_and_Scale_or
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FixGimbalLock", "FixGimbalLock\FixGimbalLock.vcxproj", "{D489AB69-2C04-4CD2-8124-89728FA06D7D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FixGimbalLock2", "FixGimbalLock2\FixGimbalLock2.vcxproj", "{725DC4E3-A94F-4591-B6E0-8AB0A2770821}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -372,6 +374,12 @@ Global
 		{D489AB69-2C04-4CD2-8124-89728FA06D7D}.Release|x64.Build.0 = Release|x64
 		{D489AB69-2C04-4CD2-8124-89728FA06D7D}.Release|x86.ActiveCfg = Release|Win32
 		{D489AB69-2C04-4CD2-8124-89728FA06D7D}.Release|x86.Build.0 = Release|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Debug|x64.ActiveCfg = Debug|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Debug|x86.ActiveCfg = Debug|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Debug|x86.Build.0 = Debug|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Release|x64.ActiveCfg = Release|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Release|x86.ActiveCfg = Release|Win32
+		{725DC4E3-A94F-4591-B6E0-8AB0A2770821}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,4 @@
 #include "AppClass.h"
-using namespace Simplex;
 //Mouse
 void Application::ProcessMouseMovement(sf::Event a_event)
 {
@@ -130,6 +129,10 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 					m_uActCont = 7;
 			}
 		}
+		break;
+
+	case sf::Keyboard::R:
+		m_v3Rotation = vector3(0.0f, 0.0f, 0.0f);
 		break;
 	}
 
@@ -397,37 +400,66 @@ void Application::ProcessKeyboard(void)
 	if (fMultiplier)
 		fSpeed *= 5.0f;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		m_pCameraMngr->MoveForward(fSpeed);
-		m_v3CameraPosition.z += fSpeed;
-	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		m_pCameraMngr->MoveForward(-fSpeed);
-		m_v3CameraPosition.z -= fSpeed;
-	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		m_pCameraMngr->MoveSideways(-fSpeed);
-		m_v3CameraPosition.x += fSpeed;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		m_pCameraMngr->MoveSideways(fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		m_pCameraMngr->MoveVertical(-fSpeed);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		m_pCameraMngr->MoveVertical(fSpeed);
+#pragma endregion
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+	{
+		if (fMultiplier)
+		{
+			m_v3Rotation.x -= 0.1f;
+		}
+		else
+		{
+			m_v3Rotation.x += 0.1f;
+		}
+		quaternion q1 = glm::angleAxis(1.0f, vector3(1.0f, 0.0f, 0.0f));
+		m_qRotation = m_qRotation * q1;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		m_pCameraMngr->MoveSideways(fSpeed);
-		m_v3CameraPosition.x -= fSpeed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+	{
+		if (fMultiplier)
+		{
+			m_v3Rotation.y -= 0.1f;
+		}
+		else
+		{
+			m_v3Rotation.y += 0.1f;
+		}
+		quaternion q1 = glm::angleAxis(1.0f, vector3(0.0f, 1.0f, 0.0f));
+		m_qRotation = m_qRotation * q1;
 	}
-		
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-		m_pCameraMngr->MoveVertical(-fSpeed);
-		m_v3CameraPosition.y += fSpeed;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+	{
+		if (fMultiplier)
+		{
+			m_v3Rotation.z -= 0.1f;
+		}
+		else
+		{
+			m_v3Rotation.z += 0.1f;
+		}
+		quaternion q1 = glm::angleAxis(1.0f, vector3(0.0f, 0.0f, 1.0f));
+		m_qRotation = m_qRotation * q1;
 	}
-		
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-		m_pCameraMngr->MoveVertical(fSpeed);
-		m_v3CameraPosition.y -= fSpeed;
-	}
-		
-#pragma endregion
 }
 //Joystick
 void Application::ProcessJoystick(void)
