@@ -19,7 +19,11 @@ class Application
 	MyCamera* m_pCamera = nullptr; //Camera class
 	MyMeshManager* m_pMyMeshMngr = nullptr; //My Mesh Manager
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //Programmer
-	vector3 tgt = vector3(0.0f, 0.0f, 0.0f);
+	vector3 tgt;
+	vector3 forward;
+	vector3 right;
+	vector3 up;
+	glm::quat orientation;
 private:
 	static ImGuiObject gui; //GUI object
 

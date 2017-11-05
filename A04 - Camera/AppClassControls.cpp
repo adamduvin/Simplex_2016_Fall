@@ -327,6 +327,16 @@ void Application::ArcBall(float a_fSensitivity)
 }
 void Application::CameraRotation(float a_fSpeed)
 {
+	// sets local axes
+	forward = m_pCamera->GetPosition();
+	forward.z -= 1.0f;
+
+	right = m_pCamera->GetPosition();
+	right.x += 1.0f;
+
+	up = m_pCamera->GetPosition();
+	up.y += 1.0f;
+
 	if (m_bFPC == false)
 		return;
 
@@ -354,39 +364,70 @@ void Application::CameraRotation(float a_fSpeed)
 	{
 		fDeltaMouse = static_cast<float>(CenterX - MouseX);
 		fAngleY += fDeltaMouse * a_fSpeed;
+
+		glm::quat rotation = glm::angleAxis(fAngleY, AXIS_Y);
+		tgt -= forward;
+		forward = glm::rotate(rotation, forward);
+		tgt += forward;
+		right = glm::rotate(rotation, right);
 	}
 	else if (MouseX > CenterX)
 	{
 		fDeltaMouse = static_cast<float>(MouseX - CenterX);
 		fAngleY -= fDeltaMouse * a_fSpeed;
+
+		glm::quat rotation = glm::angleAxis(fAngleY, AXIS_Y);
+		tgt -= forward;
+		forward = glm::rotate(rotation, forward);
+		tgt += forward;
+		right = glm::rotate(rotation, right);
 	}
 
 	if (MouseY < CenterY)
 	{
 		fDeltaMouse = static_cast<float>(CenterY - MouseY);
 		fAngleX -= fDeltaMouse * a_fSpeed;
+
+		glm::quat rotation = glm::angleAxis(fAngleX, AXIS_X);
+		tgt -= forward;
+		forward = glm::rotate(rotation, forward);
+		tgt += forward;
+		right = glm::rotate(rotation, right);
 	}
 	else if (MouseY > CenterY)
 	{
 		fDeltaMouse = static_cast<float>(MouseY - CenterY);
 		fAngleX += fDeltaMouse * a_fSpeed;
+
+		glm::quat rotation = glm::angleAxis(fAngleX, AXIS_X);
+		tgt -= forward;
+		forward = glm::rotate(rotation, forward);
+		tgt += forward;
+		right = glm::rotate(rotation, right);
 	}
+
+	// Above calculates camera rotation
+	// Below sets rotation, disabled
+
 	//Change the Yaw and the Pitch of the camera
 	//glm::quat yaw = glm::quat(vector3(0.0f, fAngleY, 0.0f));
 	//glm::quat pitch = glm::quat(vector3(fAngleX, 0.0f, 0.0f));
 	//glm::quat totalRotation = pitch * yaw;
 	//
 	//glm::mat4 rotation = ToMatrix4(totalRotation);
-	static vector3 up = vector3(0.0f, 1.0f, 0.0f);
-	yaw.x -= fAngleY;
-	pitch.y -= fAngleX;
-	up.x = -yaw.x;
-	vector3 rot = yaw + pitch;
+
+	//orientation *= 
+
+	//static vector3 up = vector3(0.0f, 1.0f, 0.0f);
+	//yaw.x -= fAngleY;
+	//pitch.y -= fAngleX;
+	//up.x = -yaw.x;
+	//vector3 rot = yaw + pitch;
 	//rot.z += 1.0f;
 	//tgt = rot;
 
-	m_pCamera->SetTarget(rot);
-	m_pCamera->SetPositionTargetAndUp(m_pCamera->GetPosition(), rot, up);
+	//m_pCamera->SetTarget(tgt);
+	//m_pCamera->SetPositionTargetAndUp(m_pCamera->GetPosition(), rot, up);
 
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
@@ -407,7 +448,9 @@ void Application::ProcessKeyboard(void)
 
 	static vector3 newPos = m_pCamera->GetPosition();
 	static vector3 newTarget = newPos;
-	static vector3 up = vector3(0.0f, 1.0f, 0.0f);
+	//static vector3 up = vector3(0.0f, 1.0f, 0.0f);
+
+	// checks input and moves new position vector
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 		//std::cout << "W Pressed" << std::endl;
@@ -419,6 +462,7 @@ void Application::ProcessKeyboard(void)
 		//newPos.z = m_pCameraMngr->GetPosition().z;
 		//std::cout << newPos.z << std::endl;
 		newPos.z += fSpeed;
+		//newPos += forward * fSpeed;
 		//newTarget = newPos;
 		//newTarget.z += 1.0f;
 		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
@@ -431,6 +475,7 @@ void Application::ProcessKeyboard(void)
 		//newPos.y = m_pCameraMngr->GetPosition().y;
 		//newPos.z = m_pCameraMngr->GetPosition().z;
 		newPos.z -= fSpeed;
+		//newPos -= forward * fSpeed;
 		//newTarget = newPos;
 		//newTarget.z += 1.0f;
 		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
@@ -438,6 +483,7 @@ void Application::ProcessKeyboard(void)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		newPos.x -= fSpeed;
+		//newPos += right * fSpeed;
 		//std::cout << "X: " << m_pCamera->GetUp().x << " Y: " << m_pCamera->GetUp().y << " Z: " << m_pCamera->GetUp().z << std::endl;
 		//newTarget = newPos;
 		//newTarget.z += 1.0f;
@@ -446,19 +492,20 @@ void Application::ProcessKeyboard(void)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		newPos.x += fSpeed;
+		//newPos -= right * fSpeed;
 		//std::cout << "X: " << m_pCamera->GetUp().x << " Y: " << m_pCamera->GetUp().y << " Z: " << m_pCamera->GetUp().z << std::endl;
 		//newTarget = newPos;
 		//newTarget.z += 1.0f;
 		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
 	}
 
-	//newTarget = newPos;
-	//newTarget.z += 1.0f;
+	newTarget = newPos;
+	newTarget.z += 1.0f;
 	up.x = -newPos.x;
 	up.z = -newPos.z;
 	//m_pCamera->SetPosition(newPos);
 	//m_pCamera->SetUp(up);
-	//m_pCamera->SetPositionTargetAndUp(newPos, tgt, up);
+	m_pCamera->SetPositionTargetAndUp(newPos, newTarget, up);	// Moves camera and sets new target
 
 #pragma endregion
 }
