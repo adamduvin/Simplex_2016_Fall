@@ -23,7 +23,17 @@ void Application::InitVariables(void)
 	m_pMyMeshMngr = MyMeshManager::GetInstance();
 	m_pMyMeshMngr->SetCamera(m_pCamera);
 	
+	m_pMesh = new MyMesh();
+	m_pMesh->GenerateCylinder(1.0f, 2.0f, 6, C_PURPLE);
 	
+	//std::vector<matrix4> m4List;
+	for (uint i = 0; i < 5000; ++i) {
+		matrix4* pMatrix = new matrix4();
+		*pMatrix = glm::translate(IDENTITY_M4, vector3(i * 2.0f, 0.0f, 0.0f));
+		m_m4List.push_back(pMatrix);
+	}
+
+	m_pRB = new MyRigidBody(m_pMesh);
 }
 void Application::Update(void)
 {
@@ -53,6 +63,18 @@ void Application::Display(void)
 	//Clear the screen
 	ClearScreen();
 
+	//m_pMesh->Render(m_pCamera, ToMatrix4(m_qArcBall));
+	/*
+	for (uint i = 0; i < 5; ++i) {
+		m_pMesh->Render(m_pCamera, glm::translate(IDENTITY_M4, vector3(i*2.0f, 0.0f, 0.0f)) * ToMatrix4(m_qArcBall));
+	}
+	*/
+	
+	//*m_m4List[0] = ToMatrix4(m_qArcBall);
+	//m_pMesh->Render(m_pCamera, m_m4List);
+
+	m_pRB->Render(m_pCamera);
+
 	//Render the list of MyMeshManager
 	m_pMyMeshMngr->Render();
 
@@ -73,6 +95,16 @@ void Application::Display(void)
 }
 void Application::Release(void)
 {
+	for (uint i = 0; i < 5000; ++i) {
+		SafeDelete(m_m4List[i]);
+	}
+
+	SafeDelete(m_pRB);
+	//if (m_pRB) {
+	//	delete m_pRB;
+	//	m_pRB = nullptr;
+	//}
+
 	//release the singleton
 	MyMeshManager::ReleaseInstance();
 

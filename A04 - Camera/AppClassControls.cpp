@@ -333,6 +333,9 @@ void Application::CameraRotation(float a_fSpeed)
 	UINT	MouseX, MouseY;		// Coordinates for the mouse
 	UINT	CenterX, CenterY;	// Coordinates for the center of the screen.
 
+	static vector3 yaw = vector3(0.0f, 0.0f, 0.0f);
+	static vector3 pitch = vector3(0.0f, 0.0f, 0.0f);
+
 								//Initialize the position of the pointer to the middle of the screen
 	CenterX = m_pSystem->GetWindowX() + m_pSystem->GetWindowWidth() / 2;
 	CenterY = m_pSystem->GetWindowY() + m_pSystem->GetWindowHeight() / 2;
@@ -369,6 +372,22 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 	//Change the Yaw and the Pitch of the camera
+	//glm::quat yaw = glm::quat(vector3(0.0f, fAngleY, 0.0f));
+	//glm::quat pitch = glm::quat(vector3(fAngleX, 0.0f, 0.0f));
+	//glm::quat totalRotation = pitch * yaw;
+	//
+	//glm::mat4 rotation = ToMatrix4(totalRotation);
+	static vector3 up = vector3(0.0f, 1.0f, 0.0f);
+	yaw.x -= fAngleY;
+	pitch.y -= fAngleX;
+	up.x = -yaw.x;
+	vector3 rot = yaw + pitch;
+	//rot.z += 1.0f;
+	//tgt = rot;
+
+	m_pCamera->SetTarget(rot);
+	m_pCamera->SetPositionTargetAndUp(m_pCamera->GetPosition(), rot, up);
+
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
 //Keyboard
@@ -385,6 +404,62 @@ void Application::ProcessKeyboard(void)
 
 	if (fMultiplier)
 		fSpeed *= 5.0f;
+
+	static vector3 newPos = m_pCamera->GetPosition();
+	static vector3 newTarget = newPos;
+	static vector3 up = vector3(0.0f, 1.0f, 0.0f);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+		//std::cout << "W Pressed" << std::endl;
+		//m_pCameraMngr->MoveForward(fSpeed);
+		//std::cout << m_pCameraMngr->GetPosition().x << m_pCameraMngr->GetPosition().y << m_pCameraMngr->GetPosition().z << std::endl;
+		//newPos = m_pCameraMngr->GetPosition();
+		//newPos.x = m_pCameraMngr->GetPosition().x;
+		//newPos.y = m_pCameraMngr->GetPosition().y;
+		//newPos.z = m_pCameraMngr->GetPosition().z;
+		//std::cout << newPos.z << std::endl;
+		newPos.z += fSpeed;
+		//newTarget = newPos;
+		//newTarget.z += 1.0f;
+		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		//m_pCameraMngr->MoveForward(-fSpeed);
+		//vector3 newPos = m_pCameraMngr->GetPosition();
+		//newPos.x = m_pCameraMngr->GetPosition().x;
+		//newPos.y = m_pCameraMngr->GetPosition().y;
+		//newPos.z = m_pCameraMngr->GetPosition().z;
+		newPos.z -= fSpeed;
+		//newTarget = newPos;
+		//newTarget.z += 1.0f;
+		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		newPos.x -= fSpeed;
+		//std::cout << "X: " << m_pCamera->GetUp().x << " Y: " << m_pCamera->GetUp().y << " Z: " << m_pCamera->GetUp().z << std::endl;
+		//newTarget = newPos;
+		//newTarget.z += 1.0f;
+		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		newPos.x += fSpeed;
+		//std::cout << "X: " << m_pCamera->GetUp().x << " Y: " << m_pCamera->GetUp().y << " Z: " << m_pCamera->GetUp().z << std::endl;
+		//newTarget = newPos;
+		//newTarget.z += 1.0f;
+		//m_pCamera->SetPositionTargetAndUp(newPos, newTarget, AXIS_Y);
+	}
+
+	//newTarget = newPos;
+	//newTarget.z += 1.0f;
+	up.x = -newPos.x;
+	up.z = -newPos.z;
+	//m_pCamera->SetPosition(newPos);
+	//m_pCamera->SetUp(up);
+	//m_pCamera->SetPositionTargetAndUp(newPos, tgt, up);
+
 #pragma endregion
 }
 //Joystick
