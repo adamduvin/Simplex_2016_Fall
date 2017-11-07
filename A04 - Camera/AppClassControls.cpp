@@ -327,6 +327,7 @@ void Application::ArcBall(float a_fSensitivity)
 }
 void Application::CameraRotation(float a_fSpeed)
 {
+	// test git
 	// sets local axes
 	forward = m_pCamera->GetPosition();
 	forward.z -= 1.0f;
