@@ -18,38 +18,77 @@ MyEntityManager* MyEntityManager::GetInstance()
 }
 void MyEntityManager::ReleaseInstance()
 {
+	SafeDelete(m_pInstance);
+	m_pInstance = nullptr;
 }
 int Simplex::MyEntityManager::GetEntityIndex(String a_sUniqueID)
 {
+	for (int i = 0; i < m_entityList.size; i++) {
+		if (m_entityList[i]->GetUniqueID() == a_sUniqueID) {
+			return i;
+		}
+	}
+
 	return -1;
 }
 //Accessors
 Model* Simplex::MyEntityManager::GetModel(uint a_uIndex)
 {
-	return nullptr;
+	return m_entityList[a_uIndex]->GetModel();
 }
 Model* Simplex::MyEntityManager::GetModel(String a_sUniqueID)
 {
+	for (int i = 0; i < m_entityList.size; i++) {
+		if (m_entityList[i]->GetUniqueID() == a_sUniqueID) {
+			return m_entityList[i]->GetModel();
+		}
+	}
+
 	return nullptr;
 }
 RigidBody* Simplex::MyEntityManager::GetRigidBody(uint a_uIndex)
 {
-	return nullptr;
+	return m_entityList[a_uIndex]->GetRigidBody();
 }
 RigidBody* Simplex::MyEntityManager::GetRigidBody(String a_sUniqueID)
 {
+	for (int i = 0; i < m_entityList.size; i++) {
+		if (m_entityList[i]->GetUniqueID() == a_sUniqueID) {
+			return m_entityList[i]->GetRigidBody();
+		}
+	}
+
 	return nullptr;
 }
 matrix4 Simplex::MyEntityManager::GetModelMatrix(uint a_uIndex)
 {
-	return IDENTITY_M4;
+	return m_entityList[a_uIndex]->GetModelMatrix();
 }
 matrix4 Simplex::MyEntityManager::GetModelMatrix(String a_sUniqueID)
 {
+	for (int i = 0; i < m_entityList.size; i++) {
+		if (m_entityList[i]->GetUniqueID() == a_sUniqueID) {
+			return m_entityList[i]->GetModelMatrix();
+		}
+	}
+	
 	return IDENTITY_M4;
 }
 void Simplex::MyEntityManager::SetModelMatrix(matrix4 a_m4ToWorld, String a_sUniqueID)
 {
+	MyEntity* current = nullptr;
+	for (int i = 0; i < m_entityList.size; i++) {
+		if (m_entityList[i]->GetUniqueID() == a_sUniqueID) {
+			current = m_entityList[i];
+			break;
+		}
+	}
+
+	if (current == nullptr) {
+		return;
+	}
+
+
 
 }
 void Simplex::MyEntityManager::SetModelMatrix(matrix4 a_m4ToWorld, uint a_uIndex)
