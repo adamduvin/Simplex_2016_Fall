@@ -287,6 +287,88 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
+	matrix3 rotateOtherLocal;
+	for (int i = 0; i < 3; i++) {
+		float thisAxis;
+		switch(i){
+			case 0: thisAxis = m_v3MaxL.x;
+			break;
+			case 1: thisAxis = m_v3MaxL.y;
+			break;
+			case 2: thisAxis = m_v3MaxL.z;
+			break;
+		}
+		for (int j = 0; j < 3; j++) {
+			float otherAxis;
+			switch (j) {
+				case 0: otherAxis = a_pOther->GetMaxLocal().x;
+				break;
+				case 1: otherAxis = a_pOther->GetMaxLocal().y;
+				break;
+				case 2: otherAxis = a_pOther->GetMaxLocal().z;
+				break;
+			}
+			rotateOtherLocal[i][j] = glm::dot(thisAxis, otherAxis);
+		}
+	}
+
+	matrix3 rotateOtherAbs;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			rotateOtherAbs[i][j] = std::abs(rotateOtherLocal[i][j]);
+		}
+	}
+
+	vector3 distance = a_pOther->GetCenterLocal() - m_v3Center;
+	distance = vector3(glm::dot(distance.x, m_v3MaxL.x), glm::dot(distance.y, m_v3MaxL.y), glm::dot(distance.z, m_v3MaxL.z));
+
+	// Check axes of this object
+	float thisProj = m_v3HalfWidth.x;
+	float otherProj = (a_pOther->GetHalfWidth().x * rotateOtherAbs[0][0]) + (a_pOther->GetHalfWidth().y * rotateOtherAbs[0][1]) + (a_pOther->GetHalfWidth().z * rotateOtherAbs[0][2]);
+	if (std::abs(distance.x) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	thisProj = m_v3HalfWidth.y;
+	otherProj = (a_pOther->GetHalfWidth().x * rotateOtherAbs[1][0]) + (a_pOther->GetHalfWidth().y * rotateOtherAbs[1][1]) + (a_pOther->GetHalfWidth().z * rotateOtherAbs[1][2]);
+	if (std::abs(distance.y) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	thisProj = m_v3HalfWidth.z;
+	otherProj = (a_pOther->GetHalfWidth().x * rotateOtherAbs[2][0]) + (a_pOther->GetHalfWidth().y * rotateOtherAbs[2][1]) + (a_pOther->GetHalfWidth().z * rotateOtherAbs[2][2]);
+	if (std::abs(distance.z) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	// Check axes of other object
+	thisProj = (m_v3HalfWidth.x * rotateOtherAbs[0][0]) + (m_v3HalfWidth.y * rotateOtherAbs[1][0]) + (m_v3HalfWidth.z * rotateOtherAbs[2][0]);
+	otherProj = a_pOther->GetHalfWidth().x;
+	if (std::abs((distance.x * rotateOtherLocal[0][0]) + (distance.y * rotateOtherLocal[1][0]) + (distance.z * rotateOtherLocal[2][0])) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	thisProj = (m_v3HalfWidth.x * rotateOtherAbs[0][1]) + (m_v3HalfWidth.y * rotateOtherAbs[1][1]) + (m_v3HalfWidth.z * rotateOtherAbs[2][1]);
+	otherProj = a_pOther->GetHalfWidth().y;
+	if (std::abs((distance.x * rotateOtherLocal[0][1]) + (distance.y * rotateOtherLocal[1][1]) + (distance.z * rotateOtherLocal[2][1])) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	thisProj = (m_v3HalfWidth.x * rotateOtherAbs[0][2]) + (m_v3HalfWidth.y * rotateOtherAbs[1][2]) + (m_v3HalfWidth.z * rotateOtherAbs[2][2]);
+	otherProj = a_pOther->GetHalfWidth().z;
+	if (std::abs((distance.x * rotateOtherLocal[0][2]) + (distance.y * rotateOtherLocal[1][2]) + (distance.z * rotateOtherLocal[2][2])) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	// AX X BX
+	thisProj = (m_v3HalfWidth.y * rotateOtherAbs[2][0]) + (m_v3HalfWidth.z * rotateOtherAbs[1][0]);
+	otherProj = (a_pOther->GetHalfWidth().y * rotateOtherAbs[0][2]) + (a_pOther->GetHalfWidth().z * rotateOtherAbs[0][1]);
+	if (std::abs((distance.z * rotateOtherLocal[1][0]) - (distance.y * rotateOtherLocal[2][0])) > thisProj + otherProj) {
+		return eSATResults::SAT_NONE;
+	}
+
+	return 1;
+
 	//there is no axis test that separates this two objects
-	return eSATResults::SAT_NONE;
+	//return eSATResults::SAT_NONE;
 }
