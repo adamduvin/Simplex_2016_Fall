@@ -287,6 +287,8 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
+
+
 	//there is no axis test that separates this two objects
 	return eSATResults::SAT_NONE;
 }
